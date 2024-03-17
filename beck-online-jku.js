@@ -9,7 +9,7 @@
 	"inRepository": true,
 	"translatorType": 4,
 	"browserSupport": "gcsibv",
-	"lastUpdated": "2024-03-17 09:52:21"
+	"lastUpdated": "2024-03-17 10:17:57"
 }
 
 /*
@@ -540,6 +540,23 @@ function scrape(doc, url) {
 				authorString = ZU.trimInternal(authorRemoveTitlesEtc(authorArray[k]));
 				item.creators.push(ZU.cleanAuthor(authorString, "author"));
 			}
+		}
+	}
+
+	//some journals prefix the author name to the title in the web view, that should be removed
+	if(item.title.includes(":")){
+		// Extract the last names of the authors
+		let lastNames = item.creators.map(creator => creator.lastName);
+
+		// Split the title at the ":" and take the first part
+		let titleStart = item.title.split(":")[0];
+
+		// Split the titleStart at the "/" and check if all elements are in the lastNames
+		let namesInTitle = titleStart.split("/");
+
+		if (namesInTitle.every(name => lastNames.includes(name))) {
+			// If they are, remove the authors' names from the title
+			item.title = item.title.replace(titleStart + ":", "").trim();
 		}
 	}
 	

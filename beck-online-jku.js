@@ -9,7 +9,7 @@
 	"inRepository": true,
 	"translatorType": 4,
 	"browserSupport": "gcsibv",
-	"lastUpdated": "2024-03-17 10:17:57"
+	"lastUpdated": "2024-04-15 08:21:55"
 }
 
 /*
@@ -55,6 +55,8 @@ var mappingClassNameToItemType = {
 
 // build a regular expression for author cleanup in authorRemoveTitlesEtc()
 var authorTitlesEtc = ['\\/',
+	'Dr\\. iur\\.',
+	'Dr\\. iur',
 	'Dr\\.',
 	'\\b[ji]ur\\.',
 	'\\bh\\. c\\.',
@@ -134,7 +136,13 @@ function authorRemoveTitlesEtc(authorStr) {
 	// example 1: Dr. iur. Carsten Peter
 	// example 2: Rechtsanwälte Christoph Abbott
 	// example 3: Professor Dr. Klaus Messer
-	return ZU.trimInternal(ZU.trimInternal(authorStr).replace(authorRegEx, ""));
+	let noTitles = ZU.trimInternal(ZU.trimInternal(authorStr).replace(authorRegEx, ""));
+
+	//now also remove the remaining content of the title line. e.g.:
+	//	Dr. iur Sophie Tschorr ist Referentin im Geschäftsbereich des Bundesministeriums des Innern und für Heimat. Zudem ist sie Lehrbeauftragte an der Hochschule für Wirtschaft und Recht Berlin.
+	//	Dr. Axel Spies ist Rechtsanwalt bei Morgan Lewis & Bockius in Washington DC und Mitherausgeber der MMR.
+	//the title line should be cut off before " ist ...".
+	return noTitles.replace(/\sist\s.*/, "");
 }
 
 function scrapeKommentar(doc, url) {
@@ -629,6 +637,9 @@ function finalize(doc, url, item) {
 	
 	item.complete();
 }
+
+
+
 
 
 

@@ -9,7 +9,7 @@
 	"inRepository": true,
 	"translatorType": 4,
 	"browserSupport": "gcsibv",
-	"lastUpdated": "2024-04-15 08:21:55"
+	"lastUpdated": "2025-07-31 11:00:06"
 }
 
 /*
@@ -615,7 +615,8 @@ function finalize(doc, url, item) {
 	}];
 	
 	// var perma = ZU.xpathText(doc, '//div[@class="doc-link"]/a/@href');
-	var perma = ZU.xpathText(doc, '//div[@class="doc-link"]');
+	//var perma = ZU.xpathText(doc, '//div[@class="doc-link"]');
+	var perma = attr(doc, '.doc-link > a', 'href');
 	if (perma) {
 		// not clear that this case ever comes up - permalinks appear always
 		// to be relative now. but just in case it's absolute, we want to strip
@@ -633,6 +634,9 @@ function finalize(doc, url, item) {
 		}
 		
 		item.url = perma;
+	}
+	else {
+		item.url = url;
 	}
 	
 	item.complete();
